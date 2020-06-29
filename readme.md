@@ -1,8 +1,10 @@
+## Use modified penetration depth and guided search to solve nesting problem 
+
 Author: Yang Shan, Wang Zilu 
 
 From: Department of Management Science and Engineering, Tongji University
 
-**We modify penetration depth to make searching new positions for polygons in the global scale feasible with computing complexity reduced.** English version report will ve updated soon.
+We modify penetration depth to make searching new positions for polygons in the global scale feasible with computing complexity reduced. The report using English will be updated soon.
 
 ## Report(Chinese)
 
