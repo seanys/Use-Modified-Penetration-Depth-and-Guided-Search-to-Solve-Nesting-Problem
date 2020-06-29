@@ -21,7 +21,7 @@ import operator
 import multiprocessing
 
 bias = 0.0000001
-max_overlap = 1.5
+max_overlap = 5
 
 class GSMPD(object):
     """
@@ -36,7 +36,7 @@ class GSMPD(object):
     """
     def __init__(self, width, polys):
         self.width = width # 容器的宽度
-        self.initialProblem(17) # 获得全部
+        self.initialProblem(24) # 获得全部
         self.ration_dec, self.ration_inc = 0.04, 0.01
         self.TEST_MODEL = False
         # self.showPolys()
@@ -55,25 +55,32 @@ class GSMPD(object):
             max_time = 50
 
         start_time = time.time()
+        search_status = 0
         while time.time() - start_time < max_time:
             self.intialPairPD() # 初始化当前两两间的重叠
             feasible = self.minimizeOverlap() # 开始最小化重叠
             if feasible == True:
+                search_status = 0
                 print("当前利用率为：",433200/(self.cur_length*self.width))
                 self.best_orientation = copy.deepcopy(self.orientation) # 更新方向
                 self.best_polys = copy.deepcopy(self.polys) # 更新形状
                 self.best_length = self.cur_length # 更新最佳高度
-                with open("/Users/sean/Documents/Projects/Packing-Algorithm/record/lp_result.csv","a+") as csvfile:
+                with open("/Users/sean/Documents/Projects/Packing-Algorithm/record/lp_result_success.csv","a+") as csvfile:
                     writer = csv.writer(csvfile)
                     writer.writerows([[time.asctime( time.localtime(time.time()) ),feasible,self.best_length,433200/(self.best_length*self.width),self.orientation,self.polys]])
                 # self.showPolys()
                 self.shrinkBorder() # 收缩边界并平移形状到内部来
             else:
                 self.outputWarning("结果不可行，重新进行检索")
-                with open("/Users/sean/Documents/Projects/Packing-Algorithm/record/lp_result.csv","a+") as csvfile:
+                with open("/Users/sean/Documents/Projects/Packing-Algorithm/record/lp_result_fail.csv","a+") as csvfile:
                     writer = csv.writer(csvfile)
                     writer.writerows([[time.asctime( time.localtime(time.time()) ),feasible,self.cur_length,433200/(self.cur_length*self.width),self.orientation,self.polys]])        
-                self.extendBorder() # 扩大边界并进行下一次检索
+                if search_status == 1:
+                    self.shrinkBorder()
+                    search_status = 0
+                else:
+                    self.extendBorder() # 扩大边界并进行下一次检索
+                    search_status = 1            
 
     def minimizeOverlap(self):
         '''最小化某个重叠情况'''
@@ -155,7 +162,7 @@ class GSMPD(object):
             feasible_IFR = feasible_IFR.difference(cur_NFP) # 求解可行区域
             cutted_res = cur_NFP.intersection(IFR)
             cutted_NFPs.append(cutted_res) # 添加切除后的NFP，且不考虑面积过小的
-        
+                
         '''如果剩余的面积大于Bias则选择一个点，该阶段不需要考虑在边界的情况'''
         if feasible_IFR.area > bias:
             potential_points = GeometryAssistant.kwtGroupToArray(feasible_IFR,0)
@@ -321,7 +328,7 @@ class GSMPD(object):
 
     def initialProblem(self, index):
         '''获得某个解，基于该解进行优化'''
-        _input = pd.read_csv("/Users/sean/Documents/Projects/Packing-Algorithm/record/lp.csv")
+        _input = pd.read_csv("record/lp.csv")
         self.polys, self.best_polys = json.loads(_input["polys"][index]), json.loads(_input["polys"][index]) # 获得形状
         self.orientation, self.best_orientation = json.loads(_input["orientation"][index]),json.loads(_input["orientation"][index]) # 当前的形状状态（主要是角度）
         self.total_area = _input["total_area"][index] # 用来计算利用率
@@ -334,13 +341,13 @@ class GSMPD(object):
     def getPreData(self):
         '''获得全部的NFP和各个方向的形状'''
         self.all_polygons = [] # 存储所有的形状及其方向
-        fu = pd.read_csv("/Users/sean/Documents/Projects/Data/fu_orientation.csv") 
+        fu = pd.read_csv("data/fu_orientation.csv") 
         for i in range(fu.shape[0]):
             polygons=[]
             for j in ["o_0","o_1","o_2","o_3"]:
                 polygons.append(json.loads(fu[j][i]))
             self.all_polygons.append(polygons)
-        self.all_nfps = pd.read_csv("/Users/sean/Documents/Projects/Data/fu.csv") # 获得NFP
+        self.all_nfps = pd.read_csv("data/fu_lp.csv") # 获得NFP
 
     def showPolys(self):
         '''展示全部形状以及边框'''
