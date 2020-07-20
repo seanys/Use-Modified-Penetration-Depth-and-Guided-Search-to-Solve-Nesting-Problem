@@ -1,10 +1,14 @@
 ## Use modified penetration depth and guided search to solve nesting problem 
 
-Author: Yang Shan, Wang Zilu 
+Author: Yang Shan(羊山), Wang Zilu(王子路) 
 
 From: Department of Management Science and Engineering, Tongji University
 
-We modify penetration depth to make searching new positions for polygons in the global scale feasible with computing complexity reduced. The report using English will be updated soon.
+We modify penetration depth and realized precisely global search the first time on nesting problem. Hybridize it with guided search, we named it GLPS. 
+
+This methodology has obtained pronounced results compared with benchmarks.
+
+![1593867725732](img/1593867725732.jpg)
 
 ## Report(Chinese)
 
@@ -25,8 +29,6 @@ We modify penetration depth to make searching new positions for polygons in the 
 ![1593866790902](img/1593866790902.jpg)
 
 ![1593866811805](img/1593866811805.jpg)
-
-![1593866849142](img/1593866849142.jpg)
 
 ![1593867725732](img/1593867725732.jpg)
 
@@ -59,40 +61,6 @@ However, the searching efficiency is low because the best position can't
 
 
 **For the cuckoo search, it needs to search over 450 positions and the best position may not be found. However, take dateset fu for example, after about only 50-70 positions be tested, the location with the least penetration depth can be found.**
-
-
-
-## What we have done？ 
-
-<img src="img/image-20200623160956903.png" alt="image-20200623160956903" width="800px" />
-
-## Algorithm Outline
-
-<img src="img/image-20200623104625377.png" alt="image-20200623104625377" height="300px" />
-
-
-
-
-
-## Geometry
-
-<img src="img/image-20200623172800026.png" alt="image-20200623172800026" width="600px" />
-
-
-
-### Convex
-
-
-
-<img src="img/image-20200623105743665.png" alt="image-20200623105743665" height="200px" />
-
-### Non-Convex
-
-
-
-
-
-## Experiments
 
 
 
