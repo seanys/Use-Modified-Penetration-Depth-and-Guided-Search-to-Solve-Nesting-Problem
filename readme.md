@@ -4,6 +4,8 @@ Author: Yang Shan(羊山), Wang Zilu(王子路)
 
 From: Department of Management Science and Engineering, Tongji University
 
+**Paper for this work is still editing and the experiment is still in progress.** 
+
 We modify penetration depth and realized precisely global search the first time on nesting problem. Hybridize it with guided search, we named it GLPS. 
 
 This methodology has obtained pronounced results compared with benchmarks.
